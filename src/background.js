@@ -1,9 +1,11 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, globalShortcut } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
+
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -25,6 +27,7 @@ function createWindow() {
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION
     }
   })
+
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -71,6 +74,14 @@ app.on('ready', async () => {
     }
   }
   createWindow()
+
+  // 绑定快捷键
+  globalShortcut.register('CommandOrControl+Alt+K', function () {
+    win.show()
+  })
+  globalShortcut.register('CommandOrControl+Alt+P', function () {
+    win.hide()
+  })
 })
 
 // Exit cleanly on request from parent process in development mode.
