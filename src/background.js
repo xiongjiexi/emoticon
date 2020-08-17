@@ -3,8 +3,10 @@
 import { app, protocol, BrowserWindow, globalShortcut } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+import { request } from 'http'
 const isDevelopment = process.env.NODE_ENV !== 'production'
-
+const path = require('path')
+const fs = require('fs')
 
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -77,13 +79,9 @@ app.on('ready', async () => {
   } */
   createWindow()
 
-  // 绑定快捷键
-  globalShortcut.register('CommandOrControl+Alt+K', function () {
-    win.show()
-  })
-  globalShortcut.register('CommandOrControl+Alt+P', function () {
-    win.hide()
-  })
+  bindShortcutKey()
+
+  registerFF()
 })
 
 // Exit cleanly on request from parent process in development mode.
@@ -99,4 +97,33 @@ if (isDevelopment) {
       app.quit()
     })
   }
+}
+
+
+/**
+ * 注册新的文件协议
+ */
+function registerFF() {
+  protocol.registerFileProtocol(
+    'ff', 
+    (request, callback) => {
+      const url = request.url.substr(5)
+      callback(fs.createReadStream(path.normalize(`${url}`)))
+    },
+    error => {
+      if(error) console.error('Failed to register protocol')
+    }
+  )
+}
+
+/**
+ * 绑定快捷键
+ */
+function bindShortcutKey(){
+  globalShortcut.register('CommandOrControl+Alt+K', function () {
+    win.show()
+  })
+  globalShortcut.register('CommandOrControl+Alt+P', function () {
+    win.hide()
+  })
 }

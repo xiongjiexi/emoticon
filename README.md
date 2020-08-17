@@ -1,28 +1,18 @@
 # emoticon
 
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
-
-
-### MVP
+## MVP
 1. 快捷键弹出窗口隐藏窗口
 2. ctrl+v保存图片
     1. 粘贴显示图片在窗口中
     2. 将图片文件保存到本地
 3. 显示所有图片
 4. 双击显示的图片直接复制到剪贴板
+
+## issue
+1. 使用CTRL+v替代button
+    1. 只粘贴图片
+2. 定时更新图片列表 & CTRL+v时更新
+
+## feature
+1. 支持选中删除图片（右键删除）
+2. 控制图片大小，使所有图片都在一个固定大小里
