@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="Emoticon">
     <!-- <input id="" placeholder="" @keyup.ctrl.86="paste($event)"/> -->
     <span id="paste-from"></span>
     <el-row :gutter="20">
@@ -25,7 +25,7 @@ const path = require('path')
 const fs = require('fs')
 
 export default {
-  name: 'Home',
+  name: 'Emoticon',
   data(){
     return {
       list : arr()
@@ -137,8 +137,6 @@ function renderImg() {
 function arr() {
   console.log('step1')
   let imgPath = 'D:/my_data/emoticon_data/'
-  let parentDiv = document.getElementById('imgs')
-  document.createElement('img')
   let files = fs.readdirSync(imgPath)
   let array = files.map(x => {
     return 'ff://' + imgPath + '/' + x

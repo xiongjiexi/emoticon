@@ -1,14 +1,20 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Emoticon from '../views/Emoticon.vue'
+import TODO from '../views/TODO.vue'
 
 Vue.use(VueRouter)
 
   const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home
+    path: '/TODO',
+    name: 'TODO',
+    component: TODO
+  },
+  {
+    path: '/Emoticon',
+    name: 'Emoticon',
+    component: Emoticon
   },
   {
     path: '/about',

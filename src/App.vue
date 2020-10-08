@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">表情包管理大师</router-link>
+      <router-link to="/Emoticon">Emoticon</router-link>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <router-link to="/TODO">TODO</router-link>
       <!-- <router-link to="/about">About</router-link> -->
     </div>
     <router-view/>
