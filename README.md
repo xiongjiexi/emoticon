@@ -19,5 +19,5 @@
 
 ## TODO模块
 ### feature
-[ ] 临时添加todo list
-[ ] 数据持久化
+- [ ] 临时添加todo list
+- [ ] 数据持久化
