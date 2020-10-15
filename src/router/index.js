@@ -9,7 +9,12 @@ Vue.use(VueRouter)
   {
     path: '/TODO',
     name: 'TODO',
-    component: TODO
+    component: TODO,
+    children: [
+      // {path: '', component: TodoSection},
+      // {path: '', component: TodoSection},
+      // {path: '', component: TodoSection},
+    ]
   },
   {
     path: '/Emoticon',

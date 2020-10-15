@@ -1,13 +1,4 @@
 <template>
-  <!-- <div class="TODO">
-    <span id="paste-from"></span>
-    <el-input v-model="input" @keyup.enter.native="enterEvent($event)" placeholder="请输入内容"></el-input>
-    <el-row :gutter="20" id="todo-list">
-      <el-col v-bind:key="val" v-for="val in list">
-        <el-checkbox>{{ val }}</el-checkbox>
-      </el-col>
-    </el-row>
-  </div> -->
     <section class="todoapp" v-cloak>
 			<header class="header">
 				<!-- <h1>todos</h1> -->
@@ -23,7 +14,8 @@
 							<label @dblclick="editTodo(todo)">{{todo.title}}</label>
 							<button class="destroy" @click="removeTodo(todo)"></button>
 						</div>
-						<input class="edit" type="text" v-model="todo.title" v-todo-focus="todo == editedTodo" @blur="doneEdit(todo)" @keydown.enter="doneEdit(todo)" @keydown.esc="cancelEdit(todo)">
+						<input class="edit" type="text" v-model="todo.title" v-todo-focus="todo == editedTodo" 
+							@blur="doneEdit(todo)" @keydown.enter="doneEdit(todo)" @keydown.esc="cancelEdit(todo)">
 					</li>
 				</ul>
 			</section>
@@ -32,9 +24,9 @@
 					<strong v-text="remaining"></strong> {{pluralize('item', remaining)}} left
 				</span>
 				<ul class="filters">
-					<li><a href="#/all" :class="{selected: visibility == 'all'}">All</a></li>
-					<li><a href="#/active" :class="{selected: visibility == 'active'}">Active</a></li>
-					<li><a href="#/completed" :class="{selected: visibility == 'completed'}">Completed</a></li>
+					<li><a href="#/all" :class="{selected: visibility == '#/all'}">All</a></li>
+					<li><a href="#/active" :class="{selected: visibility == '#/active'}">Active</a></li>
+					<li><a href="#/completed" :class="{selected: visibility == '#/completed'}">Completed</a></li>
 				</ul>
 				<button class="clear-completed" @click="removeCompleted" v-show="todos.length > remaining">
 					Clear completed
@@ -44,8 +36,6 @@
 </template>
 
 <script>
-// import HelloWorld from '@/components/HelloWorld.vue'
-import cc from 'director/build/director.js'
 import appjs from '@/js/app.js'
 import routesjs from '@/js/routes.js'
 import storejs from '@/js/store.js'
@@ -53,128 +43,125 @@ import aa from 'todomvc-common/base.css'
 import bb from 'todomvc-app-css/index.css'
 
 export default {
-  // the root element that will be compiled
-		name: 'todoapp',
-
-		// app initial state
-		data: {
+	name: 'todoapp',
+	components: {
+	},
+	data(){
+		return {
 			todos: todoStorage.fetch(),
 			newTodo: '',
 			editedTodo: null,
-			visibility: 'all'
+			visibility: '#/all',
+			currentRoute: window.location.hash,
+		}
+	},
+	computed: {
+		filteredTodos: function () {
+			return filters[this.visibility](this.todos);
 		},
-    data(){
-        return {
-          todos: todoStorage.fetch(),
-          newTodo: '',
-          editedTodo: null,
-          visibility: 'all'
-        }
-      },
-		// watch todos change for localStorage persistence
-		watch: {
-			todos: {
-				deep: true,
-				handler: todoStorage.save
-			}
+		remaining: function () {
+			return filters['#/active'](this.todos).length;
 		},
-
-		// computed properties
-		// http://vuejs.org/guide/computed.html
-		computed: {
-			filteredTodos: function () {
-				return filters[this.visibility](this.todos);
+		allDone: {
+			get: function () {
+				return this.remaining === 0;
 			},
-			remaining: function () {
-				return filters.active(this.todos).length;
-			},
-			allDone: {
-				get: function () {
-					return this.remaining === 0;
-				},
-				set: function (value) {
-					this.todos.forEach(function (todo) {
-						todo.completed = value;
-					});
-				}
-			}
-		},
-
-		// methods that implement data logic.
-		// note there's no DOM manipulation here at all.
-		methods: {
-
-			pluralize: function (word, count) {
-				return word + (count === 1 ? '' : 's');
-			},
-
-			addTodo: function () {
-				var value = this.newTodo && this.newTodo.trim();
-				if (!value) {
-					return;
-				}
-				// TODO: Use a proper UUID instead of `Date.now()`.
-				this.todos.push({ id: Date.now(), title: value, completed: false });
-				this.newTodo = '';
-			},
-
-			removeTodo: function (todo) {
-				var index = this.todos.indexOf(todo);
-				this.todos.splice(index, 1);
-			},
-
-			editTodo: function (todo) {
-				this.beforeEditCache = todo.title;
-				this.editedTodo = todo;
-			},
-
-			doneEdit: function (todo) {
-				if (!this.editedTodo) {
-					return;
-				}
-				this.editedTodo = null;
-				todo.title = todo.title.trim();
-				if (!todo.title) {
-					this.removeTodo(todo);
-				}
-			},
-
-			cancelEdit: function (todo) {
-				this.editedTodo = null;
-				todo.title = this.beforeEditCache;
-			},
-
-			removeCompleted: function () {
-				this.todos = filters.active(this.todos);
-			}
-		},
-
-		// a custom directive to wait for the DOM to be updated
-		// before focusing on the input field.
-		// http://vuejs.org/guide/custom-directive.html
-		directives: {
-			'todo-focus': function (el, binding) {
-				if (binding.value) {
-					el.focus();
-				}
+			set: function (value) {
+				this.todos.forEach(function (todo) {
+					todo.completed = value;
+				});
 			}
 		}
+	},
+	watch: {
+		todos: {
+			deep: true,
+			handler: todoStorage.save
+		},
+		currentRoute: {
+			immediate: true,
+			handler: function(){
+				this.visibility = this.currentRoute
+			}
+		}
+	},
+	methods: {
+
+		pluralize: function (word, count) {
+			return word + (count === 1 ? '' : 's');
+		},
+
+		addTodo: function () {
+			var value = this.newTodo && this.newTodo.trim();
+			if (!value) {
+				return;
+			}
+			// TODO: Use a proper UUID instead of `Date.now()`.
+			this.todos.push({ id: Date.now(), title: value, completed: false });
+			this.newTodo = '';
+		},
+
+		removeTodo: function (todo) {
+			var index = this.todos.indexOf(todo);
+			this.todos.splice(index, 1);
+		},
+
+		editTodo: function (todo) {
+			this.beforeEditCache = todo.title;
+			this.editedTodo = todo;
+		},
+
+		doneEdit: function (todo) {
+			if (!this.editedTodo) {
+				return;
+			}
+			this.editedTodo = null;
+			todo.title = todo.title.trim();
+			if (!todo.title) {
+				this.removeTodo(todo);
+			}
+		},
+
+		cancelEdit: function (todo) {
+			this.editedTodo = null;
+			todo.title = this.beforeEditCache;
+		},
+
+		removeCompleted: function () {
+			this.todos = filters['#/active'](this.todos);
+		}
+	},
+	directives: {
+		'todo-focus': function (el, binding) {
+			if (binding.value) {
+				el.focus();
+			}
+		}
+	},
+	created() {
+		window.addEventListener('popstate', () => {
+			this.currentRoute = window.location.hash
+		})
+	}
 }
 
 var filters = {
-		all: function (todos) {
-			return todos;
-		},
-		active: function (todos) {
-			return todos.filter(function (todo) {
-				return !todo.completed;
-			});
-		},
-		completed: function (todos) {
-			return todos.filter(function (todo) {
-				return todo.completed;
-			});
-		}
-	};
+	'': function (todos) {
+		return todos;
+	},
+	'#/all': function (todos) {
+		return todos;
+	},
+	'#/active': function (todos) {
+		return todos.filter(function (todo) {
+			return !todo.completed;
+		});
+	},
+	'#/completed': function (todos) {
+		return todos.filter(function (todo) {
+			return todo.completed;
+		});
+	}
+};
 
 </script>
